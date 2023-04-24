@@ -95,7 +95,8 @@ public:
 
   // Construct a network from a collection of paths
   FlipEdgeNetwork(ManifoldSurfaceMesh& mesh_, IntrinsicGeometryInterface& inputGeom,
-                  std::vector<std::vector<Halfedge>> paths, VertexData<bool> extraMarkedVerts = VertexData<bool>());
+                  const std::vector<std::vector<Halfedge>>& paths,
+                  VertexData<bool> extraMarkedVerts = VertexData<bool>());
 
   // === Static initializers
 
@@ -226,13 +227,18 @@ public:
   void delaunayRefine(double areaThresh = std::numeric_limits<double>::infinity(), size_t maxInsertions = INVALID_IND,
                       double angleBound = 25.);
 
-  // Split bent edges in the underlying triangulation. Useful for viz.
-  void splitBentEdges(double angleDeg, size_t maxInsertions = INVALID_IND);
-
   // Perform one round of De Casteljau Bezier subdivision
   // Network must be a connected sequence of paths forming a curve
   void bezierSubdivide(size_t nRounds);
   void bezierSubdivideRecursive(size_t nRoundsRemaining, const Vertex firstControlCall, const Vertex lastControlCall);
+
+  // === Rewinding & updating
+  // (useful if you want to compute many paths without reinitializing this data structure each time)
+  // NOTE for now does not effect marked vertices
+  bool supportRewinding = false;
+  void rewind(); // undo the flips in the rewind record and clear all stored data
+  void reinitializePath(const std::vector<std::vector<Halfedge>>& paths);
+  std::vector<std::tuple<Edge, double, double, double, bool>> rewindRecord;
 
   // === Visualization
   VertexPositionGeometry* posGeom = nullptr; // for visualization only!

@@ -8,13 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     if: "! contains(toJSON(github.event.commits.*.message), '[ci skip]')"
     steps:
     - uses: actions/checkout@v1
       with:
         submodules: true
-
+        
     - name: configure
       run: cd test && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ..
 

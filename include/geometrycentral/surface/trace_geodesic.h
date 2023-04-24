@@ -1,7 +1,7 @@
 #pragma once
 
-#include "geometrycentral/surface/manifold_surface_mesh.h"
 #include "geometrycentral/surface/intrinsic_geometry_interface.h"
+#include "geometrycentral/surface/manifold_surface_mesh.h"
 #include "geometrycentral/surface/surface_point.h"
 
 
@@ -15,14 +15,14 @@ struct TraceGeodesicResult {
   Vector2 endingDir;                    // the incoming direction to the final point, in its tangent space
   bool hitBoundary = false;             // did the trace stop early because we hit a boundary?
   bool hasPath = false;                 // is pathPoints populated?
+  double length;                        // length of traced path (generally equals norm of traceVec,
+                                        // unless tracing stopped early)
 };
 
 struct TraceOptions {
   bool includePath = false;
   bool errorOnProblem = false;
   EdgeData<bool>* barrierEdges = nullptr; // if set, traces will stop when they hit barrier edges
-  //bool allowEndOnEdge = false;            // can the trace end on an edge? if so, uses epsilon below
-  //double allowEndOnEdgeEps = 1e-5;        // in absolute length
   size_t maxIters = INVALID_IND;
 };
 extern const TraceOptions defaultTraceOptions;
